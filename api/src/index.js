@@ -4,6 +4,8 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express')
 require('dotenv').config();
 const jwt = require('jsonwebtoken')
+const helmet = require('helmet')
+const cors = require('cors')
 
 // 模組匯入
 const db = require('./db');
@@ -25,6 +27,8 @@ const getUser = token => {
 }
 
 const app = express();
+app.use(helmet())
+app.use(cors())
 
 db.connect(DB_HOST)
 
