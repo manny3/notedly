@@ -1,6 +1,6 @@
 module.exports = {
   notes: async (parent, args, { models }) => {
-    return await models.Note.find()
+    return await models.Note.find().limit(100)
   },
   note: async (parent, args, { models }) => {
     return await models.Note.findById(args.id)
@@ -29,7 +29,7 @@ module.exports = {
       cursorQuery = { _id: { $lt: cursor }}
     }
 
-    let notes = await models.User.find(cursorQuery)
+    let notes = await models.Note.find(cursorQuery)
       .sort({ _id: - 1 })
       .limit(limit + 1);
 

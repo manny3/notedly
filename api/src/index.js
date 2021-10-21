@@ -6,6 +6,8 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken')
 const helmet = require('helmet')
 const cors = require('cors')
+const depthLimit = require('graphql-depth-limit')
+const { createComplexityLimitRule } = require('graphql-validation-complexity')
 
 // 模組匯入
 const db = require('./db');
@@ -35,11 +37,12 @@ db.connect(DB_HOST)
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
+  validationRules: [depthLimit(5), createComplexityLimitRule(1000)],
+  context: async ({ req }) => {
     // 從標頭取得使用者權杖
     const token = req.headers.authorization;
     // 嘗試使用權杖擷取使用者
-    const user = getUser(token);
+    const user = await getUser(token);
 
     console.log(user);
     // 將DB模型和使用者新增至context
